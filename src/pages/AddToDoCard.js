@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 function AddToDoCard(todoTaskData) {
   const history = useHistory();
 
+  /* Connector to send POST requests to firebase database */
   function addCardHandler() {
     fetch(
       "https://react-pet-project-e6751-default-rtdb.firebaseio.com/new.json",
@@ -14,7 +15,7 @@ function AddToDoCard(todoTaskData) {
         body: JSON.stringify(todoTaskData),
       }
     ).then(() => {
-        history.replace("/");
+      history.replace("/");
     });
   }
 

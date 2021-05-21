@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { Card, CardTitle, CardText, CardSubtitle, Row } from "reactstrap";
 
+/* Data for cards */
 const DUMMY_DATA = [
   {
     id: "a1",
@@ -29,6 +30,7 @@ const DUMMY_DATA = [
   },
 ];
 
+/* Drag and drop functionality*/
 function Task() {
   const [cards, updateCards] = useState(DUMMY_DATA);
 
