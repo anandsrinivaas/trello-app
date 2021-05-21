@@ -15,7 +15,11 @@ You will also see any lint errors in the console.
 Run the following commands on your local machine to install dependencies
 
 npm install
+
 npm install reactstrap react react-dom
+
 npm install react-bootstrap bootstrap@4.6.0
+
 npm install react-router-dom
+
 npm install react-beautiful-dnd
