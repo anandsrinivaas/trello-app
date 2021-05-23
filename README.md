@@ -23,3 +23,5 @@ npm install react-bootstrap bootstrap@4.6.0
 npm install react-router-dom
 
 npm install react-beautiful-dnd
+
+npm install uuid
