@@ -3,8 +3,6 @@ import AddToDoCard from "./pages/AddToDoCard";
 import AddCard from "./components/AddCard";
 import Task from "./components/Task";
 import Todo from "./components/Todo";
-import Inprogress from "./components/Inprogress";
-import Done from "./components/Done";
 import "./index.css";
 import React from "react";
 import { Route, Switch } from "react-router-dom";
@@ -15,18 +13,11 @@ function App() {
       <Switch>
         <Route path="/" exact>
           <Container className="Card">
-            <h3 text-align="center">Kanban Desk</h3>
+            <h3>Kanban Desk</h3>
             <Row>
-              <Col md="4" className="Card main-border">
-                <Todo text="To do" />
+              <Col md="12" className="Card main-border">
                 <Task />
                 <AddCard />
-              </Col>
-              <Col md="4" className="Card main-border">
-                <Inprogress />
-              </Col>
-              <Col md="4" className="Card main-border">
-                <Done />
               </Col>
             </Row>
           </Container>

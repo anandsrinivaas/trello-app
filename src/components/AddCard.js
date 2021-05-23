@@ -6,7 +6,7 @@ import { Button } from "reactstrap";
 function AddCard() {
   return (
     <Link to="/new-to-do-card">
-      <Button renderAs="button" className="col-md-12 button" color="secondary">
+      <Button renderAs="button" className="col-md-12 button" color="success">
         + ADD NEW CARD
       </Button>
     </Link>

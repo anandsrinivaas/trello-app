@@ -1,88 +1,143 @@
 import React, { useState } from "react";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { Card, CardTitle, CardText, CardSubtitle, Row } from "reactstrap";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { Col, Row } from "reactstrap";
+import { v4 as uuid } from "uuid";
 
-/* Data for cards */
-const DUMMY_DATA = [
+const itemsFromBackend = [
+  { id: uuid(), content: ["Create reusable components", "01 June, 2021", "3"] },
   {
-    id: "a1",
-    title: "Advertising outdoors",
-    deadline: "01 June, 2021",
-    storyPoints: "1",
+    id: uuid(),
+    content: ["Fetch back end data from database", "15 June, 2021", "5"],
   },
-  {
-    id: "a2",
-    title: "Develop UI components",
-    deadline: "10 July, 2021",
-    storyPoints: "3",
-  },
-  {
-    id: "a3",
-    title: "Deploy changes to Staging",
-    deadline: "30 July, 2021",
-    storyPoints: "5",
-  },
-  {
-    id: "a4",
-    title: "Develop UI components",
-    deadline: "10 July, 2021",
-    storyPoints: "3",
-  },
+  { id: uuid(), content: ["Create POC for Trello app", "30 July, 2011", "8"] },
 ];
+
+console.log(itemsFromBackend);
+
+const columnsFromBackend = {
+  [uuid()]: {
+    name: "To do",
+    items: itemsFromBackend,
+  },
+  [uuid()]: {
+    name: "In Progress",
+    items: [],
+  },
+  [uuid()]: {
+    name: "Done",
+    items: [],
+  },
+};
+
+const onDragEnd = (result, columns, setColumns) => {
+  if (!result.destination) return;
+  const { source, destination } = result;
+
+  if (source.droppableId !== destination.droppableId) {
+    const sourceColumn = columns[source.droppableId];
+    const destColumn = columns[destination.droppableId];
+    const sourceItems = [...sourceColumn.items];
+    const destItems = [...destColumn.items];
+    const [removed] = sourceItems.splice(source.index, 1);
+    destItems.splice(destination.index, 0, removed);
+    setColumns({
+      ...columns,
+      [source.droppableId]: {
+        ...sourceColumn,
+        items: sourceItems,
+      },
+      [destination.droppableId]: {
+        ...destColumn,
+        items: destItems,
+      },
+    });
+  } else {
+    const column = columns[source.droppableId];
+    const copiedItems = [...column.items];
+    const [removed] = copiedItems.splice(source.index, 1);
+    copiedItems.splice(destination.index, 0, removed);
+    setColumns({
+      ...columns,
+      [source.droppableId]: {
+        ...column,
+        items: copiedItems,
+      },
+    });
+  }
+};
 
 /* Drag and drop functionality*/
 function Task() {
-  const [cards, updateCards] = useState(DUMMY_DATA);
-
-  function handleOnDragEnd(result) {
-    if (!result.destination) return;
-    const items = Array.from(cards);
-    const [reorderedItems] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItems);
-
-    updateCards(items);
-  }
+  const [columns, setColumns] = useState(columnsFromBackend);
   return (
-    <React.Fragment>
-      <DragDropContext onDragEnd={handleOnDragEnd}>
-        <Droppable droppableId="cardId">
-          {(provided) => (
-            <div
-              className="cardId"
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
-              {cards.map(({ id, title, deadline, storyPoints }, index) => {
-                return (
-                  <Draggable key={id} draggableId={id} index={index}>
-                    {(provided) => (
+    <Row>
+      <DragDropContext
+        onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
+      >
+        {Object.entries(columns).map(([columnId, column], index) => {
+          return (
+            <Col md="4" key={columnId}>
+              <h4>{column.name}</h4>
+              <div>
+                <Droppable droppableId={columnId} key={columnId}>
+                  {(provided, snapshot) => {
+                    return (
                       <div
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
+                        {...provided.droppableProps}
                         ref={provided.innerRef}
+                        style={{
+                          background: snapshot.isDraggingOver
+                            ? "#b8b6b6"
+                            : "#e0dede",
+                          padding: 4,
+                          minHeight: 500,
+                        }}
                       >
-                        <Card body>
-                          <CardTitle tag="h5">{title}</CardTitle>
-                          <Row>
-                            <CardText className="col-sm-10">
-                              {deadline}
-                            </CardText>
-                            <CardSubtitle className="col-sm-2">
-                              {storyPoints}
-                            </CardSubtitle>
-                          </Row>
-                        </Card>
+                        {column.items.map((item, index, i) => {
+                          return (
+                            <Draggable
+                              key={item.id}
+                              draggableId={item.id}
+                              index={index}
+                            >
+                              {(provided, snapshot) => {
+                                return (
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    style={{
+                                      userSelect: "none",
+                                      padding: 16,
+                                      margin: "0 0 8px 0",
+                                      minHeight: "50px",
+                                      backgroundColor: snapshot.isDragging
+                                        ? "#0e94ed"
+                                        : "#71afd9",
+                                      color: "#01101a",
+                                      ...provided.draggableProps.style,
+                                    }}
+                                  >
+                                    {item.content.map((subItems, index) => (
+                                      <p key={index}>{subItems}</p>
+                                    ))}
+                                  </div>
+                                );
+                              }}
+                            </Draggable>
+                          );
+                        })}
+                        {provided.placeholder}
                       </div>
-                    )}
-                  </Draggable>
-                );
-              })}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
+                    );
+                  }}
+                </Droppable>
+              </div>
+            </Col>
+          );
+        })}
       </DragDropContext>
-    </React.Fragment>
+    </Row>
   );
 }
 
