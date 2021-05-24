@@ -3,7 +3,8 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { Col, Row } from "reactstrap";
 import { v4 as uuid } from "uuid";
 
-const itemsFromBackend = [
+/*Static data for the cards*/
+const toDoCards = [
   { id: uuid(), content: ["Create reusable components", "01 June, 2021", "3"] },
   {
     id: uuid(),
@@ -12,12 +13,12 @@ const itemsFromBackend = [
   { id: uuid(), content: ["Create POC for Trello app", "30 July, 2011", "8"] },
 ];
 
-console.log(itemsFromBackend);
+console.log(toDoCards);
 
-const columnsFromBackend = {
+const taskColumns = {
   [uuid()]: {
     name: "To do",
-    items: itemsFromBackend,
+    items: toDoCards,
   },
   [uuid()]: {
     name: "In Progress",
@@ -68,7 +69,7 @@ const onDragEnd = (result, columns, setColumns) => {
 
 /* Drag and drop functionality*/
 function Task() {
-  const [columns, setColumns] = useState(columnsFromBackend);
+  const [columns, setColumns] = useState(taskColumns);
   return (
     <Row>
       <DragDropContext
